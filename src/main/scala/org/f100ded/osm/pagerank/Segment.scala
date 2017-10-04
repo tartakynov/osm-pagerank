@@ -11,7 +11,14 @@ case class Segment(geometry: LineString) {
     * Returns a new segment if the segments can be merged
     */
   def merge(other: Segment): Option[Segment] = {
-    ???
+    if (this.flowsInto(other) || other.flowsInto(this)) {
+      val factory = geometry.getFactory
+      val a = if (this.flowsInto(other)) this.geometry else other.geometry
+      val b = if (this.flowsInto(other)) other.geometry else this.geometry
+      Some(Segment(factory.createLineString(a.getCoordinates.dropRight(1) ++ b.getCoordinates)))
+    } else {
+      None
+    }
   }
 
   /**
