@@ -47,35 +47,35 @@ class SegmentSpec extends FlatSpec with Matchers {
   import Segments._
 
   "A" should "not split A" in {
-    A.split(A) shouldBe empty
+    A.splitBy(A) shouldBe empty
   }
 
   it should "not split B" in {
-    A.split(B) shouldBe empty
+    B.splitBy(A) shouldBe empty
   }
 
   it should "not split C" in {
-    A.split(C) shouldBe empty
+    C.splitBy(A) shouldBe empty
   }
 
   it should "not split D" in {
-    A.split(D) shouldBe empty
+    D.splitBy(A) shouldBe empty
   }
 
   it should "not split E" in {
-    A.split(E) shouldBe empty
+    E.splitBy(A) shouldBe empty
   }
 
   it should "not split F" in {
-    A.split(F) shouldBe empty
+    F.splitBy(A) shouldBe empty
   }
 
   it should "not split G" in {
-    A.split(G) shouldBe empty
+    G.splitBy(A) shouldBe empty
   }
 
   it should "not split H" in {
-    A.split(H) shouldBe empty
+    H.splitBy(A) shouldBe empty
   }
 
   it should "not merge A" in {
@@ -142,8 +142,12 @@ class SegmentSpec extends FlatSpec with Matchers {
     A.flowsInto(H) should be (false)
   }
 
+  "B" should "split EA" in {
+    EA.splitBy(B) should contain ((E, A))
+  }
+
   "C" should "split A" in {
-    C.split(A) should contain ((A1, A2))
+    A.splitBy(C) should contain ((A1, A2))
   }
 
   "D" should "merge A" in {
@@ -159,6 +163,10 @@ class SegmentSpec extends FlatSpec with Matchers {
   }
 
   "F" should "split A" in {
-    F.split(A) should contain ((A1, A2))
+    A.splitBy(F) should contain ((A1, A2))
+  }
+
+  "G" should "split AD" in {
+    AD.splitBy(G) should contain ((A, D))
   }
 }
