@@ -31,7 +31,7 @@ class SegmentSpec extends FlatSpec with Matchers {
 
     val C = Segment(line(new Coordinate(3d, 3d), new Coordinate(3d, 6d)))
 
-    val D = Segment(line(new Coordinate(3d, 6d), new Coordinate(6d, 6d)))
+    val D = Segment(line(new Coordinate(6d, 3d), new Coordinate(6d, 6d)))
 
     val E = Segment(line(new Coordinate(0d, 0d), new Coordinate(0d, 3d)))
 

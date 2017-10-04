@@ -1,6 +1,6 @@
 package org.f100ded.osm.pagerank
 
-import com.vividsolutions.jts.geom.LineString
+import com.vividsolutions.jts.geom.{LineString, Point}
 import org.f100ded.osm.pagerank.Segment.SplitResult
 
 /**
@@ -26,7 +26,7 @@ case class Segment(geometry: LineString) {
     * Checks whether the current segment's end point is equal to another segment's start point
     */
   def flowsInto(other: Segment): Boolean = {
-    ???
+    geometry.getEndPoint.equalsExact(other.geometry.getStartPoint)
   }
 }
 
