@@ -13,104 +13,66 @@ class SegmentSpec extends FlatSpec with Matchers {
   // E |     F |     G |
   //   |       |       |
 
-  "A" should "not split A" in {
-    A.splitBy(A) shouldBe empty
-  }
-
-  it should "not split B" in {
-    B.splitBy(A) shouldBe empty
-  }
-
-  it should "not split C" in {
-    C.splitBy(A) shouldBe empty
-  }
-
-  it should "not split D" in {
-    D.splitBy(A) shouldBe empty
-  }
-
-  it should "not split E" in {
-    E.splitBy(A) shouldBe empty
-  }
-
-  it should "not split F" in {
-    F.splitBy(A) shouldBe empty
-  }
-
-  it should "not split G" in {
-    G.splitBy(A) shouldBe empty
-  }
-
-  it should "not split H" in {
-    H.splitBy(A) shouldBe empty
-  }
-
-  it should "not merge A" in {
-    A.merge(A) shouldBe empty
-  }
-
-  it should "not merge B" in {
-    A.merge(B) shouldBe empty
-  }
-
-  it should "not merge C" in {
-    A.merge(C) shouldBe empty
-  }
-
-  it should "merge D" in {
+  "A" should "merge D, E" in {
     A.merge(D) should contain (AD)
-  }
-
-  it should "merge E" in {
     A.merge(E) should contain (EA)
-  }
-
-  it should "not merge F" in {
-    A.merge(F) shouldBe empty
-  }
-
-  it should "not merge G" in {
-    A.merge(G) shouldBe empty
-  }
-
-  it should "not merge H" in {
-    A.merge(H) shouldBe empty
-  }
-
-  it should "not flow into A" in {
-    A.flowsInto(A) should be (false)
-  }
-
-  it should "not flow into B" in {
-    A.flowsInto(B) should be (false)
-  }
-
-  it should "not flow into C" in {
-    A.flowsInto(C) should be (false)
   }
 
   it should "flow into D" in {
     A.flowsInto(D) should be (true)
   }
 
-  it should "not flow into E" in {
+  it should "be continued by D" in {
+    A.continuedBy(D) should be (true)
+  }
+
+  it should "not split A, B, C, D, E, F, G, H" in {
+    A.splitBy(A) shouldBe empty
+    B.splitBy(A) shouldBe empty
+    C.splitBy(A) shouldBe empty
+    D.splitBy(A) shouldBe empty
+    E.splitBy(A) shouldBe empty
+    F.splitBy(A) shouldBe empty
+    G.splitBy(A) shouldBe empty
+    H.splitBy(A) shouldBe empty
+  }
+
+  it should "not merge A, B, C, F, G, H" in {
+    A.merge(A) shouldBe empty
+    A.merge(B) shouldBe empty
+    A.merge(C) shouldBe empty
+    A.merge(F) shouldBe empty
+    A.merge(G) shouldBe empty
+    A.merge(H) shouldBe empty
+  }
+
+  it should "not flow into A, B, C, E, F, G, H" in {
+    A.flowsInto(A) should be (false)
+    A.flowsInto(B) should be (false)
+    A.flowsInto(C) should be (false)
     A.flowsInto(E) should be (false)
-  }
-
-  it should "not flow into F" in {
     A.flowsInto(F) should be (false)
-  }
-
-  it should "not flow into G" in {
     A.flowsInto(G) should be (false)
+    A.flowsInto(H) should be (false)
   }
 
-  it should "not flow into H" in {
-    A.flowsInto(H) should be (false)
+  it should "not be continued by B, C, E, F, G, H" in {
+    A.continuedBy(B) should be (false)
+    A.continuedBy(C) should be (false)
+    A.continuedBy(E) should be (false)
+    A.continuedBy(F) should be (false)
+    A.continuedBy(G) should be (false)
+    A.continuedBy(H) should be (false)
   }
 
   "B" should "split EA" in {
     EA.splitBy(B) should contain ((E, A))
+  }
+
+  it should "not be continuedBy A, A1, E" in {
+    B.continuedBy(A) should be (false)
+    B.continuedBy(A1) should be (false)
+    B.continuedBy(E) should be (false)
   }
 
   "C" should "split A" in {
@@ -125,8 +87,14 @@ class SegmentSpec extends FlatSpec with Matchers {
     D.flowsInto(A) should be (false)
   }
 
-  "E" should "flow into A" in {
+  "E" should "flow into A and B" in {
     E.flowsInto(A) should be (true)
+    E.flowsInto(B) should be (true)
+  }
+
+  it should "be continued by A, B" in {
+    E.continuedBy(A) should be (true)
+    E.continuedBy(B) should be (true)
   }
 
   "F" should "split A" in {
@@ -137,15 +105,21 @@ class SegmentSpec extends FlatSpec with Matchers {
     F.flowsInto(A) should be (true)
   }
 
+  it should "be continued by C, A2" in {
+    F.continuedBy(C) should be (true)
+    F.continuedBy(A2) should be (true)
+  }
+
   "G" should "split AD" in {
     AD.splitBy(G) should contain ((A, D))
+  }
+
+  it should "flow into D" in {
+    G.flowsInto(D) should be (true)
   }
 
   it should "not flow into A" in {
     G.flowsInto(A) should be (false)
   }
 
-  it should "flow into D" in {
-    G.flowsInto(D) should be (true)
-  }
 }
