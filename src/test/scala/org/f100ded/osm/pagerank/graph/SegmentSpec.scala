@@ -1,50 +1,17 @@
-package org.f100ded.osm.pagerank
+package org.f100ded.osm.pagerank.graph
 
-import com.vividsolutions.jts.geom.{Coordinate, GeometryFactory, LineString}
 import org.scalatest.{FlatSpec, Matchers}
 
 class SegmentSpec extends FlatSpec with Matchers {
-  /*
-     ^       ^       ^
-   B |     C |     D |
-     |       |       |
-   A x-------x------>x       H ------>
-     ^       ^       ^
-   E |     F |     G |
-     |       |       |
-  */
+  import org.f100ded.osm.pagerank.Segments._
 
-  object Segments {
-    private val factory = new GeometryFactory()
-
-    private def line(coordinates: Coordinate*): LineString = factory.createLineString(coordinates.toArray)
-
-    val A = Segment(line(new Coordinate(0d, 3d), new Coordinate(6d, 3d)))
-
-    val A1 = Segment(line(new Coordinate(0d, 3d), new Coordinate(3d, 3d)))
-
-    val A2 = Segment(line(new Coordinate(3d, 3d), new Coordinate(6d, 3d)))
-
-    val AD = Segment(line(new Coordinate(0d, 3d), new Coordinate(6d, 3d), new Coordinate(6d, 6d)))
-
-    val B = Segment(line(new Coordinate(0d, 3d), new Coordinate(0d, 6d)))
-
-    val C = Segment(line(new Coordinate(3d, 3d), new Coordinate(3d, 6d)))
-
-    val D = Segment(line(new Coordinate(6d, 3d), new Coordinate(6d, 6d)))
-
-    val E = Segment(line(new Coordinate(0d, 0d), new Coordinate(0d, 3d)))
-
-    val EA = Segment(line(new Coordinate(0d, 0d), new Coordinate(0d, 3d), new Coordinate(6d, 3d)))
-
-    val F = Segment(line(new Coordinate(3d, 0d), new Coordinate(3d, 3d)))
-
-    val G = Segment(line(new Coordinate(6d, 0d), new Coordinate(6d, 3d)))
-
-    val H = Segment(line(new Coordinate(10d, 3d), new Coordinate(14d, 3d)))
-  }
-
-  import Segments._
+  //   ^       ^       ^
+  // B |     C |     D |
+  //   |       |       |
+  // A x-------x------>x       H ------>
+  //   ^       ^       ^
+  // E |     F |     G |
+  //   |       |       |
 
   "A" should "not split A" in {
     A.splitBy(A) shouldBe empty
@@ -166,7 +133,19 @@ class SegmentSpec extends FlatSpec with Matchers {
     A.splitBy(F) should contain ((A1, A2))
   }
 
+  it should "flow into A" in {
+    F.flowsInto(A) should be (true)
+  }
+
   "G" should "split AD" in {
     AD.splitBy(G) should contain ((A, D))
+  }
+
+  it should "not flow into A" in {
+    G.flowsInto(A) should be (false)
+  }
+
+  it should "flow into D" in {
+    G.flowsInto(D) should be (true)
   }
 }

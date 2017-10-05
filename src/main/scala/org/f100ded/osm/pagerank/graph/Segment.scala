@@ -1,7 +1,7 @@
-package org.f100ded.osm.pagerank
+package org.f100ded.osm.pagerank.graph
 
 import com.vividsolutions.jts.geom.{Coordinate, LineString, Point}
-import org.f100ded.osm.pagerank.Segment.SplitResult
+import org.f100ded.osm.pagerank.graph.Segment.SplitResult
 
 /**
   * A segment of a linear graph, e.g. road graph
@@ -13,9 +13,9 @@ case class Segment(geometry: LineString) {
     * Returns a new segment if the segments can be merged
     */
   def merge(other: Segment): Option[Segment] = {
-    if (this.flowsInto(other) || other.flowsInto(this)) {
-      val first = if (this.flowsInto(other)) this.geometry else other.geometry
-      val second = if (this.flowsInto(other)) other.geometry else this.geometry
+    if (this.continuedBy(other) || other.continuedBy(this)) {
+      val first = if (this.continuedBy(other)) this.geometry else other.geometry
+      val second = if (this.continuedBy(other)) other.geometry else this.geometry
       Some(Segment(factory.createLineString(first.getCoordinates.dropRight(1) ++ second.getCoordinates)))
     } else {
       None
@@ -66,8 +66,16 @@ case class Segment(geometry: LineString) {
   /**
     * Checks whether the current segment's end point is equal to another segment's start point
     */
-  def flowsInto(other: Segment): Boolean = {
+  def continuedBy(other: Segment): Boolean = {
     geometry.getEndPoint.equalsExact(other.geometry.getStartPoint)
+  }
+
+  /**
+    * Checks whether the given segment flows into the current segment
+    */
+  def flowsInto(other: Segment): Boolean = {
+    val endpoint = this.geometry.getEndPoint
+    other.geometry.intersects(endpoint) && !other.geometry.getEndPoint.equalsExact(endpoint)
   }
 }
 
