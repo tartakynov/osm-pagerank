@@ -6,7 +6,7 @@ import scala.io.Source
   * Graph of linear segments, e.g. a road graph or river net
   */
 object GraphUtils {
-  type Graph = Map[Segment, Set[Segment]]
+  type Graph = Map[Segment, Seq[Segment]]
 
   def fromCSV(file: Source): Graph = {
     ???
@@ -16,6 +16,7 @@ object GraphUtils {
     * Merge segments continuing each other into a bigger segment
     */
   def merge(graph: Graph): Graph = {
+    // https://stackoverflow.com/questions/5471234/how-to-implement-a-dfs-with-immutable-data-types
     ???
   }
 
@@ -23,6 +24,7 @@ object GraphUtils {
     * Split segments by intersection points
     */
   def split(graph: Graph): Graph = {
+    // https://stackoverflow.com/questions/5471234/how-to-implement-a-dfs-with-immutable-data-types
     ???
   }
 
