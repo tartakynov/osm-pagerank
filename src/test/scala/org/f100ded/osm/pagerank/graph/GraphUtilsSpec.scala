@@ -38,17 +38,10 @@ class GraphUtilsSpec extends FlatSpec with Matchers {
     cleaned.getOrElse(H, Nil) shouldBe empty
   }
 
-  "merge" should "merge" in {
-    val merged = GraphUtils.merge(graph)
-    merged.size shouldBe graph.size
-    merged.contains(A) shouldBe true
-    merged.contains(B) shouldBe true
-    merged.contains(C) shouldBe true
-    merged.contains(D) shouldBe true
-    merged.contains(E) shouldBe true
-    merged.contains(F) shouldBe true
-    merged.contains(G) shouldBe true
-    merged.contains(H) shouldBe true
-    succeed
+  "dfs" should "dfs" in {
+    GraphUtils.dfs(graph, A) should contain only (A, E, F)
+    GraphUtils.dfs(graph, B) should contain only (B, E)
+    GraphUtils.dfs(graph, D) should contain only (D, A, E, F, G)
+    GraphUtils.dfs(graph, C) should contain only (C, A, E, F)
   }
 }

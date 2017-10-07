@@ -18,7 +18,8 @@ class SegmentSpec extends FlatSpec with Matchers {
     A.merge(E) should contain (EA)
   }
 
-  it should "flow into D" in {
+  it should "flow into C, D" in {
+    A.flowsInto(C) should be (true)
     A.flowsInto(D) should be (true)
   }
 
@@ -46,10 +47,9 @@ class SegmentSpec extends FlatSpec with Matchers {
     A.merge(H) shouldBe empty
   }
 
-  it should "not flow into A, B, C, E, F, G, H" in {
+  it should "not flow into A, B, E, F, G, H" in {
     A.flowsInto(A) should be (false)
     A.flowsInto(B) should be (false)
-    A.flowsInto(C) should be (false)
     A.flowsInto(E) should be (false)
     A.flowsInto(F) should be (false)
     A.flowsInto(G) should be (false)

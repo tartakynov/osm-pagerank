@@ -76,10 +76,28 @@ case class Segment(name: String, geometry: LineString) {
 
   /**
     * Checks whether the given segment flows into the current segment
+    *
+    * case 1 ('this' flows into 'other')
+    * --------*-->
+    * this    |
+    *         |
+    *         | other
+    *         v
+    *
+    * case 2 ('this' flows into 'other')
+    *         |
+    * ------->*
+    * this    |
+    *         |
+    *         | other
+    *         v
     */
   def flowsInto(other: Segment): Boolean = {
-    val endpoint = this.geometry.getEndPoint
-    other.geometry.intersects(endpoint) && !other.geometry.getEndPoint.equalsExact(endpoint)
+    val case1 = other.geometry.getStartPoint.intersects(this.geometry) &&
+      !other.geometry.getStartPoint.equalsExact(this.geometry.getStartPoint)
+    val case2 = this.geometry.getEndPoint.intersects(other.geometry) &&
+      !other.geometry.getEndPoint.equalsExact(this.geometry.getEndPoint)
+    case1 || case2
   }
 }
 
