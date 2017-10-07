@@ -54,4 +54,29 @@ class GraphUtilsSpec extends FlatSpec with Matchers {
     merged.contains(A) shouldBe true
     merged.contains(HJ) shouldBe true
   }
+
+  "forget" should "work" in {
+    val x = GraphUtils.forget(graph, A)
+    x.foreach(println)
+    println()
+    val y = GraphUtils.merge(x)
+    y.foreach(println)
+    succeed
+  }
+
+  "split" should "work" in {
+    val g: Graph = Seq(
+      EAD -> Seq(B, C, F, G),
+      B -> Seq(EAD),
+      C -> Seq(EAD),
+      F -> Seq(EAD),
+      G -> Seq(EAD),
+      H -> Seq(J),
+      J -> Seq(H)
+    ).toMap
+
+    val x = GraphUtils.split(g)
+    x.foreach(println)
+    fail("I think it works, but it needs refining for sure")
+  }
 }

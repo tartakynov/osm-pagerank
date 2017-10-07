@@ -35,6 +35,9 @@ object Segments {
 
   val EA = Segment("EA", line(new Coordinate(0d, 0d), new Coordinate(0d, 3d), new Coordinate(6d, 3d)))
 
+  val EAD = Segment("EAD", line(
+    new Coordinate(0d, 0d), new Coordinate(0d, 3d), new Coordinate(6d, 3d), new Coordinate(6d, 6d)))
+
   val F = Segment("F", line(new Coordinate(3d, 0d), new Coordinate(3d, 3d)))
 
   val G = Segment("G", line(new Coordinate(6d, 0d), new Coordinate(6d, 3d)))
