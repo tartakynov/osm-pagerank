@@ -6,7 +6,7 @@ import org.f100ded.osm.pagerank.graph.Segment.SplitResult
 /**
   * A segment of a linear graph, e.g. road graph
   */
-case class Segment(geometry: LineString) {
+case class Segment(name: String, geometry: LineString) {
   private lazy val factory = this.geometry.getFactory
 
   /**
@@ -14,9 +14,13 @@ case class Segment(geometry: LineString) {
     */
   def merge(other: Segment): Option[Segment] = {
     if (this.continuedBy(other) || other.continuedBy(this)) {
-      val first = if (this.continuedBy(other)) this.geometry else other.geometry
-      val second = if (this.continuedBy(other)) other.geometry else this.geometry
-      Some(Segment(factory.createLineString(first.getCoordinates.dropRight(1) ++ second.getCoordinates)))
+      val first = if (this.continuedBy(other)) this else other
+      val second = if (this.continuedBy(other)) other else this
+      val mergedGeometry = factory.createLineString(
+        first.geometry.getCoordinates.dropRight(1) ++ second.geometry.getCoordinates
+      )
+
+      Some(Segment(first.name + second.name, mergedGeometry))
     } else {
       None
     }
@@ -52,7 +56,7 @@ case class Segment(geometry: LineString) {
               point.getCoordinate +: coordinates.takeRight(coordinates.length - i - 1).filterNot(_.equals2D(c))
             )
 
-            result = Some(Tuple2(Segment(first), Segment(second)))
+            result = Some(Tuple2(Segment(name + "1", first), Segment(name + "2", second)))
           }
         }
 
