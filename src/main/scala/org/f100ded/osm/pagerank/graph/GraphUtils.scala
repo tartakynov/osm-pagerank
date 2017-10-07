@@ -68,11 +68,4 @@ object GraphUtils {
     // https://stackoverflow.com/questions/5471234/how-to-implement-a-dfs-with-immutable-data-types
     ???
   }
-
-  /**
-    * Convert the graph into directed by direction of the flow
-    */
-  def clean(graph: Graph): Graph = graph.map {
-    case (segment, neighbours) => segment -> neighbours.filter(_.flowsInto(segment))
-  }
 }

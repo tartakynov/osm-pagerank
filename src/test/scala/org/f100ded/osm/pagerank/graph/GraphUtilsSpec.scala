@@ -25,19 +25,6 @@ class GraphUtilsSpec extends FlatSpec with Matchers {
     H -> Nil
   ).toMap
 
-  "clean" should "leave only links flowing into the segment" in {
-    val cleaned = GraphUtils.clean(graph)
-    cleaned.size shouldBe graph.size
-    cleaned.getOrElse(A, Nil) should contain only (E, F)
-    cleaned.getOrElse(B, Nil) should contain only E
-    cleaned.getOrElse(C, Nil) should contain only F
-    cleaned.getOrElse(D, Nil) should contain only (A, G)
-    cleaned.getOrElse(E, Nil) shouldBe empty
-    cleaned.getOrElse(F, Nil) shouldBe empty
-    cleaned.getOrElse(G, Nil) shouldBe empty
-    cleaned.getOrElse(H, Nil) shouldBe empty
-  }
-
   "dfs" should "dfs" in {
     GraphUtils.dfs(graph, A) should contain only (A, E, F)
     GraphUtils.dfs(graph, B) should contain only (B, E)
