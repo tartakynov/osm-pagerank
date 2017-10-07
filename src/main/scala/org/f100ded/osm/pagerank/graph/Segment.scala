@@ -10,17 +10,15 @@ case class Segment(name: String, geometry: LineString) {
   private lazy val factory = this.geometry.getFactory
 
   /**
-    * Returns a new segment if the segments can be merged
+    * Concatenates the given segment into the current segment if possible
     */
-  def merge(other: Segment): Option[Segment] = {
-    if (this.continuedBy(other) || other.continuedBy(this)) {
-      val first = if (this.continuedBy(other)) this else other
-      val second = if (this.continuedBy(other)) other else this
+  def concat(other: Segment): Option[Segment] = {
+    if (this.continuedBy(other)) {
       val mergedGeometry = factory.createLineString(
-        first.geometry.getCoordinates.dropRight(1) ++ second.geometry.getCoordinates
+        this.geometry.getCoordinates.dropRight(1) ++ other.geometry.getCoordinates
       )
 
-      Some(Segment(first.name + second.name, mergedGeometry))
+      Some(Segment(this.name + other.name, mergedGeometry))
     } else {
       None
     }

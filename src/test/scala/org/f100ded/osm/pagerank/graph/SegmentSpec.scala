@@ -13,9 +13,8 @@ class SegmentSpec extends FlatSpec with Matchers {
   // E |     F |     G |
   //   |       |       |
 
-  "A" should "merge D, E" in {
-    A.merge(D) should contain (AD)
-    A.merge(E) should contain (EA)
+  "A" should "concat D" in {
+    A.concat(D) should contain (AD)
   }
 
   it should "flow into C, D" in {
@@ -38,13 +37,13 @@ class SegmentSpec extends FlatSpec with Matchers {
     H.splitBy(A) shouldBe empty
   }
 
-  it should "not merge A, B, C, F, G, H" in {
-    A.merge(A) shouldBe empty
-    A.merge(B) shouldBe empty
-    A.merge(C) shouldBe empty
-    A.merge(F) shouldBe empty
-    A.merge(G) shouldBe empty
-    A.merge(H) shouldBe empty
+  it should "not concat A, B, C, F, G, H" in {
+    A.concat(A) shouldBe empty
+    A.concat(B) shouldBe empty
+    A.concat(C) shouldBe empty
+    A.concat(F) shouldBe empty
+    A.concat(G) shouldBe empty
+    A.concat(H) shouldBe empty
   }
 
   it should "not flow into A, B, E, F, G, H" in {
@@ -79,8 +78,8 @@ class SegmentSpec extends FlatSpec with Matchers {
     A.splitBy(C) should contain ((A1, A2))
   }
 
-  "D" should "merge A" in {
-    D.merge(A) should contain (AD)
+  "D" should "not concat A" in {
+    D.concat(A) shouldBe empty
   }
 
   it should "not flow into A" in {
@@ -90,6 +89,10 @@ class SegmentSpec extends FlatSpec with Matchers {
   "E" should "flow into A and B" in {
     E.flowsInto(A) should be (true)
     E.flowsInto(B) should be (true)
+  }
+
+  it should "concat A" in {
+    E.concat(A) should contain (EA)
   }
 
   it should "be continued by A, B" in {

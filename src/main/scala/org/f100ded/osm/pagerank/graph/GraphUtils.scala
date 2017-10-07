@@ -17,28 +17,34 @@ object GraphUtils {
     * Merge segments continuing each other into a bigger segment
     */
   def merge(graph: Graph): Graph = {
-//    val visited = mutable.Set[Segment]()
-//    val stack = mutable.Stack[Segment]()
-//    var g = graph
-//    stack.pushAll(g.keySet)
-//    while (stack.nonEmpty) {
-//      val segment = stack.pop()
-//      if (!visited.contains(segment)) {
-//        visited.add(segment)
-//        val next = g(segment).filterNot(visited.contains)
-//        next.filter(segment.continuedBy) match {
-//          case head :: Nil =>
-//            val merged = segment.merge(head)
-//            g += merged.get -> (g(head) ++ g(segment))
-//            g --= Seq(head, segment)
-//            stack.pushAll(next.filterNot(head.equals))
-//          case _ =>
-//            stack.pushAll(next)
-//        }
-//      }
-//    }
-//
-//    g
+    val visited = mutable.Set[Segment]()
+    val stack = mutable.Stack[Segment]()
+    var g = graph
+    stack.pushAll(g.keySet)
+    while (stack.nonEmpty) {
+      val segment = stack.pop()
+      if (!visited.contains(segment)) {
+        visited.add(segment)
+        val next = g(segment).filterNot(visited.contains)
+        next.filter(canMerge(g, segment, _)) match {
+          case head :: Nil =>
+            val merged = segment.concat(head)
+            g += merged.get -> (g(head) ++ g(segment))
+            g --= Seq(head, segment)
+            stack.pushAll(next.filterNot(head.equals))
+          case _ =>
+            stack.pushAll(next)
+        }
+      }
+    }
+
+    g
+  }
+
+  /**
+    * Checks if the two segments can be merged with each other
+    */
+  def canMerge(graph: Graph, first: Segment, second: Segment): Boolean = {
     ???
   }
 
