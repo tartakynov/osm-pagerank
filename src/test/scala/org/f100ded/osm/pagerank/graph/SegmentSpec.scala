@@ -66,7 +66,7 @@ class SegmentSpec extends FlatSpec with Matchers {
   }
 
   "B" should "split EA" in {
-    EA.splitBy(B) should contain ((E, A))
+    EA.splitBy(B) should contain ((E.copy(name = "EA1"), A.copy("EA2")))
   }
 
   it should "not be continuedBy A, A1, E" in {
@@ -111,7 +111,7 @@ class SegmentSpec extends FlatSpec with Matchers {
   }
 
   "G" should "split AD" in {
-    AD.splitBy(G) should contain ((A, D))
+    AD.splitBy(G) should contain ((A.copy(name = "AD1"), D.copy("AD2")))
   }
 
   it should "flow into D" in {

@@ -25,10 +25,14 @@ class GraphUtilsSpec extends FlatSpec with Matchers {
     H -> Nil
   ).toMap
 
-  "dfs" should "dfs" in {
+  "dfs" should "traverse the graph by direction of the flow" in {
     GraphUtils.dfs(graph, A) should contain only (A, E, F)
     GraphUtils.dfs(graph, B) should contain only (B, E)
     GraphUtils.dfs(graph, D) should contain only (D, A, E, F, G)
     GraphUtils.dfs(graph, C) should contain only (C, A, E, F)
+    GraphUtils.dfs(graph, E) should contain only E
+    GraphUtils.dfs(graph, F) should contain only F
+    GraphUtils.dfs(graph, G) should contain only G
+    GraphUtils.dfs(graph, H) should contain only H
   }
 }
