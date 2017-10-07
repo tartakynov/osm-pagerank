@@ -9,10 +9,10 @@ class GraphUtilsSpec extends FlatSpec with Matchers {
   //   ^       ^       ^
   // B |     C |     D |
   //   |       |       |
-  // A x-------x------>x       H ------>
-  //   ^       ^       ^
-  // E |     F |     G |
-  //   |       |       |
+  // A x-------x------>x       H ------>x
+  //   ^       ^       ^                |
+  // E |     F |     G |              J |
+  //   |       |       |                v
 
   val graph: Graph = Seq(
     A -> Seq(B, C, D, E, F, G),
@@ -22,7 +22,8 @@ class GraphUtilsSpec extends FlatSpec with Matchers {
     E -> Seq(A, B),
     F -> Seq(A, C),
     G -> Seq(A, D),
-    H -> Nil
+    H -> Seq(J),
+    J -> Seq(H)
   ).toMap
 
   "dfs" should "traverse the graph by direction of the flow" in {
@@ -34,5 +35,23 @@ class GraphUtilsSpec extends FlatSpec with Matchers {
     GraphUtils.dfs(graph, F) should contain only F
     GraphUtils.dfs(graph, G) should contain only G
     GraphUtils.dfs(graph, H) should contain only H
+  }
+
+  "canMerge" should "be true only for H and J" in {
+    GraphUtils.canMerge(graph, E, B) shouldBe false
+    GraphUtils.canMerge(graph, B, E) shouldBe false
+    GraphUtils.canMerge(graph, A, D) shouldBe false
+    GraphUtils.canMerge(graph, G, D) shouldBe false
+    GraphUtils.canMerge(graph, H, J) shouldBe true
+    GraphUtils.canMerge(graph, J, H) shouldBe false
+  }
+
+  "merge" should "should merge H and J into one segment" in {
+    val merged = GraphUtils.merge(graph)
+    merged should have size 8
+    merged.contains(H) shouldBe false
+    merged.contains(J) shouldBe false
+    merged.contains(A) shouldBe true
+    merged.contains(HJ) shouldBe true
   }
 }

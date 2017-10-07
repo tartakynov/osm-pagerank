@@ -8,10 +8,10 @@ class SegmentSpec extends FlatSpec with Matchers {
   //   ^       ^       ^
   // B |     C |     D |
   //   |       |       |
-  // A x-------x------>x       H ------>
-  //   ^       ^       ^
-  // E |     F |     G |
-  //   |       |       |
+  // A x-------x------>x       H ------>x
+  //   ^       ^       ^                |
+  // E |     F |     G |              J |
+  //   |       |       |                v
 
   "A" should "concat D" in {
     A.concat(D) should contain (AD)

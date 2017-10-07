@@ -40,4 +40,8 @@ object Segments {
   val G = Segment("G", line(new Coordinate(6d, 0d), new Coordinate(6d, 3d)))
 
   val H = Segment("H", line(new Coordinate(10d, 3d), new Coordinate(14d, 3d)))
+
+  val J = Segment("J", line(new Coordinate(14d, 3d), new Coordinate(14d, 0d)))
+
+  val HJ = Segment("HJ", line(new Coordinate(10d, 3d), new Coordinate(14d, 3d), new Coordinate(14d, 0d)))
 }

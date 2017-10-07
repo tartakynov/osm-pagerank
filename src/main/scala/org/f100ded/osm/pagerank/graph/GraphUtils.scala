@@ -25,15 +25,15 @@ object GraphUtils {
       val segment = stack.pop()
       if (!visited.contains(segment)) {
         visited.add(segment)
-        val next = g(segment).filterNot(visited.contains)
-        next.filter(canMerge(g, segment, _)) match {
+        val neighbours = g(segment)
+        neighbours.filter(canMerge(g, segment, _)) match {
           case head :: Nil =>
             val merged = segment.concat(head)
             g += merged.get -> (g(head) ++ g(segment))
             g --= Seq(head, segment)
-            stack.pushAll(next.filterNot(head.equals))
+            stack.pushAll(neighbours.filterNot(head.equals).filterNot(visited.contains))
           case _ =>
-            stack.pushAll(next)
+            stack.pushAll(neighbours.filterNot(visited.contains))
         }
       }
     }
@@ -42,10 +42,14 @@ object GraphUtils {
   }
 
   /**
-    * Checks if the two segments can be merged with each other
+    * Checks if the two segments can be merged into one segment
     */
-  def canMerge(graph: Graph, first: Segment, second: Segment): Boolean = {
-    ???
+  def canMerge(graph: Graph, first: Segment, second: Segment): Boolean = if (first.continuedBy(second)) {
+    val x = graph(first).count(s => first.geometry.getEndPoint.intersects(s.geometry))
+    val y = graph(second).count(s => second.geometry.getStartPoint.intersects(s.geometry))
+    x == 1 && y == 1
+  } else {
+    false
   }
 
   /**
