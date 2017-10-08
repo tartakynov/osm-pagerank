@@ -1,7 +1,9 @@
 package org.f100ded.osm.pagerank.graph
 
+import com.vividsolutions.jts.geom.LineString
+import com.vividsolutions.jts.io.WKTReader
+
 import scala.annotation.tailrec
-import scala.collection.mutable
 import scala.io.Source
 
 /**
@@ -10,8 +12,21 @@ import scala.io.Source
 object Graph {
   type Graph = Map[Segment, Set[Segment]]
 
-  def fromCSV(file: Source): Graph = {
-    ???
+  def fromCSV(vertices: Source, edges: Source): Graph = {
+    val wktReader = new WKTReader()
+    val segments = vertices.getLines.map { line =>
+      val cols = line.split(",", 2)
+      val id = cols(0).toLong
+      val geom = wktReader.read(cols(1))
+      id -> Segment(geom.asInstanceOf[LineString])
+    }.toMap
+
+    edges.getLines.map { line =>
+      val cols = line.split(",", 2)
+      val id1 = cols(0).toLong
+      val id2 = cols(1).toLong
+      segments(id1) -> segments(id2)
+    }.toList.groupBy(_._1).mapValues(_.map(_._2).toSet)
   }
 
   implicit class GraphEx(graph: Graph) {
