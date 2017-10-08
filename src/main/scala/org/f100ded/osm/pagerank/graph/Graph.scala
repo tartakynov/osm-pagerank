@@ -17,17 +17,20 @@ object Graph {
     val segments = vertices.getLines.map { line =>
       val cols = line.split(",", 2)
       val id = cols(0).toLong
-      val geom = wktReader.read(cols(1))
+      val geom = wktReader.read(cols(1).stripPrefix("\"").stripSuffix("\""))
       id -> Segment(geom.asInstanceOf[LineString])
     }.toMap
 
-    edges.getLines.map { line =>
+    edges.getLines.flatMap { line =>
       val cols = line.split(",", 2)
       val id1 = cols(0).toLong
       val id2 = cols(1).toLong
-      segments(id1) -> segments(id2)
+      segments.get(id1) -> segments.get(id2) match {
+        case (Some(a), Some(b)) => Some(a -> b)
+        case _ => None
+      }
     }.toList.groupBy(_._1).mapValues(_.map(_._2).toSet)
-  }
+ }
 
   implicit class GraphEx(graph: Graph) {
     /**
