@@ -1,33 +1,45 @@
 package org.f100ded.osm.pagerank.graph
 
+import com.typesafe.scalalogging.StrictLogging
 import com.vividsolutions.jts.geom.LineString
 import com.vividsolutions.jts.io.WKTReader
 
 import scala.annotation.tailrec
-import scala.io.Source
 
 /**
   * Graph of linear segments, e.g. a road graph or river net
   */
-object Graph {
+object Graph extends StrictLogging {
   type Graph = Map[Segment, Set[Segment]]
 
-  def fromCSV(vertices: Source, edges: Source): Graph = {
+  /**
+    * Reads the segments graph from csv 2 files.
+    * Segments file contains segments identifiers and geometries.
+    * Edges file contains undirected edges that show which segments are intersecting at any point.
+    *
+    * @param segmentsFile CSV file with the following format: id,linestring_wkt
+    * @param edgesFile CSV file with the following format: id1,id2
+    * @return
+    */
+  def fromCSV(segmentsFile: String, edgesFile: String): Graph = {
+    logger.info(s"Reading graph from $segmentsFile and $edgesFile")
+    val segmentsSource = io.Source.fromFile("data/vertices.csv")
+    val edgesSource = io.Source.fromFile("data/edges.csv")
     val wktReader = new WKTReader()
-    val segments = vertices.getLines.map { line =>
+    val segments = segmentsSource.getLines.map { line =>
       val cols = line.split(",", 2)
       val id = cols(0).toLong
       val geom = wktReader.read(cols(1).stripPrefix("\"").stripSuffix("\""))
       id -> Segment(geom.asInstanceOf[LineString])
     }.toMap
 
-    edges.getLines.flatMap { line =>
+    edgesSource.getLines.flatMap { line =>
       val cols = line.split(",", 2)
-      val id1 = cols(0).toLong
-      val id2 = cols(1).toLong
+      val id1 = cols(0).trim.toLong
+      val id2 = cols(1).trim.toLong
       segments.get(id1) -> segments.get(id2) match {
-        case (Some(a), Some(b)) => Some(a -> b)
-        case _ => None
+        case (Some(first), Some(second)) => Seq(first -> second, second -> first)
+        case _ => Nil
       }
     }.toList.groupBy(_._1).mapValues(_.map(_._2).toSet)
  }
@@ -53,7 +65,7 @@ object Graph {
     /**
       * Checks if the two segments can be merged into one segment
       */
-    def canMerge(first: Segment, second: Segment): Boolean = if (first.continuedBy(second)) {
+    def areContractible(first: Segment, second: Segment): Boolean = if (first.continuedBy(second)) {
       val x = graph(first).count(s => first.geometry.getEndPoint.intersects(s.geometry))
       val y = graph(second).count(s => second.geometry.getStartPoint.intersects(s.geometry))
       x == 1 && y == 1

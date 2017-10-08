@@ -1,5 +1,6 @@
 package org.f100ded.osm.pagerank.graph
 
+import com.vividsolutions.jts.geom.Coordinate
 import org.f100ded.osm.pagerank.graph.Graph._
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -24,8 +25,8 @@ class GraphUtilsSpec extends FlatSpec with Matchers {
     J -> Set(H)
   ).toMap
 
-  "merge" should "should merge H and J into one segment" in {
-    val newGraph = GraphUtils.merge(graph)
+  "reduce" should "should contract the edge between H and J" in {
+    val newGraph = GraphUtils.reduce(graph)
     newGraph should have size 6
     newGraph.contains(H) shouldBe false
     newGraph.contains(J) shouldBe false

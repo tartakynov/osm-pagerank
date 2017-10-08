@@ -40,13 +40,13 @@ class GraphSpec extends FlatSpec with Matchers {
     graph.foldBFS(J, Set[Segment]())(x) should contain only (H, J)
   }
 
-  "canMerge" should "be true only for H and J" in {
-    graph.canMerge(E, B) shouldBe false
-    graph.canMerge(B, E) shouldBe false
-    graph.canMerge(A, D) shouldBe false
-    graph.canMerge(G, D) shouldBe false
-    graph.canMerge(H, J) shouldBe true
-    graph.canMerge(J, H) shouldBe false
+  "areContractible" should "be true only for H and J" in {
+    graph.areContractible(E, B) shouldBe false
+    graph.areContractible(B, E) shouldBe false
+    graph.areContractible(A, D) shouldBe false
+    graph.areContractible(G, D) shouldBe false
+    graph.areContractible(H, J) shouldBe true
+    graph.areContractible(J, H) shouldBe false
   }
 
   "add" should "add segment Q to the graph" in {
