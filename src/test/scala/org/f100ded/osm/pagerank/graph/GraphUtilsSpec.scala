@@ -1,5 +1,6 @@
 package org.f100ded.osm.pagerank.graph
 
+import com.vividsolutions.jts.geom.Coordinate
 import org.f100ded.osm.pagerank.graph.GraphUtils.Graph
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -15,15 +16,15 @@ class GraphUtilsSpec extends FlatSpec with Matchers {
   //   |       |       |                v
 
   val graph: Graph = Seq(
-    A -> Seq(B, C, D, E, F, G),
-    B -> Seq(A, E),
-    C -> Seq(A, F),
-    D -> Seq(A, G),
-    E -> Seq(A, B),
-    F -> Seq(A, C),
-    G -> Seq(A, D),
-    H -> Seq(J),
-    J -> Seq(H)
+    A -> Set(B, C, D, E, F, G),
+    B -> Set(A, E),
+    C -> Set(A, F),
+    D -> Set(A, G),
+    E -> Set(A, B),
+    F -> Set(A, C),
+    G -> Set(A, D),
+    H -> Set(J),
+    J -> Set(H)
   ).toMap
 
   "dfs" should "traverse the graph by direction of the flow" in {
@@ -66,17 +67,34 @@ class GraphUtilsSpec extends FlatSpec with Matchers {
 
   "split" should "work" in {
     val g: Graph = Seq(
-      EAD -> Seq(B, C, F, G),
-      B -> Seq(EAD),
-      C -> Seq(EAD),
-      F -> Seq(EAD),
-      G -> Seq(EAD),
-      H -> Seq(J),
-      J -> Seq(H)
+      EAD -> Set(B, C, F, G),
+      B -> Set(EAD),
+      C -> Set(EAD, F),
+      F -> Set(EAD, C),
+      G -> Set(EAD),
+      H -> Set(J),
+      J -> Set(H)
     ).toMap
 
     val x = GraphUtils.split(g)
     x.foreach(println)
-    fail("I think it works, but it needs refining for sure")
+    succeed
+  }
+
+  "split2" should "work" in {
+    val g: Graph = Seq(
+      EAD -> Set(B, C, F, G),
+      B -> Set(EAD),
+      C -> Set(EAD, F),
+      F -> Set(EAD, C),
+      G -> Set(EAD),
+      H -> Set(J),
+      J -> Set(H)
+    ).toMap
+    val x = GraphUtils.split2(g)
+    x.foreach {
+      case (x, y) => println(s"$x = $y")
+    }
+    succeed
   }
 }

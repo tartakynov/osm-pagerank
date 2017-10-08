@@ -24,6 +24,14 @@ case class Segment(name: String, geometry: LineString) {
     }
   }
 
+  def splittableBy(other: Segment): Boolean = this.geometry.intersection(other.geometry) match {
+    case point: Point =>
+      !point.equalsExact(this.geometry.getStartPoint) && !point.equalsExact(this.geometry.getEndPoint)
+    case _ => false
+  }
+
+  def linkedWith(other: Segment): Boolean = this.geometry.intersects(other.geometry)
+
   /**
     * Returns result of splitting the current segment into 2 segments by an intersection point
     * with another segment if possible
@@ -37,29 +45,25 @@ case class Segment(name: String, geometry: LineString) {
       distance(start, test) + distance(end, test) == distance(start, end)
     }
 
-    if (this.geometry.intersects(other.geometry) && !this.geometry.equalsExact(other.geometry)) {
+    if (this.splittableBy(other)) {
       val point = this.geometry.intersection(other.geometry).asInstanceOf[Point]
-      if (point.equalsExact(this.geometry.getStartPoint) || point.equalsExact(this.geometry.getEndPoint)) {
-        None
-      } else {
-        val coordinates = this.geometry.getCoordinates
-        var result: Option[SplitResult] = None
-        for (i <- 0 until coordinates.length - 1; if result.isEmpty) {
-          val a = coordinates(i)
-          val b = coordinates(i + 1)
-          val c = point.getCoordinate
-          if (isInSegment(a, b, c)) {
-            val first = factory.createLineString(coordinates.take(i + 1).filterNot(_.equals2D(c)) :+ c)
-            val second = factory.createLineString(
-              point.getCoordinate +: coordinates.takeRight(coordinates.length - i - 1).filterNot(_.equals2D(c))
-            )
+      val coordinates = this.geometry.getCoordinates
+      var result: Option[SplitResult] = None
+      for (i <- 0 until coordinates.length - 1; if result.isEmpty) {
+        val a = coordinates(i)
+        val b = coordinates(i + 1)
+        val c = point.getCoordinate
+        if (isInSegment(a, b, c)) {
+          val first = factory.createLineString(coordinates.take(i + 1).filterNot(_.equals2D(c)) :+ c)
+          val second = factory.createLineString(
+            point.getCoordinate +: coordinates.takeRight(coordinates.length - i - 1).filterNot(_.equals2D(c))
+          )
 
-            result = Some(Tuple2(Segment(name + "1", first), Segment(name + "2", second)))
-          }
+          result = Some((Segment(name + "1", first), Segment(name + "2", second)))
         }
-
-        result
       }
+
+      result
     } else {
       None
     }

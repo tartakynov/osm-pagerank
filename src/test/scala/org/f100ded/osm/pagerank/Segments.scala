@@ -15,7 +15,7 @@ import org.f100ded.osm.pagerank.graph.Segment
 object Segments {
   private val factory = new GeometryFactory()
 
-  private def line(coordinates: Coordinate*): LineString = factory.createLineString(coordinates.toArray)
+  def line(coordinates: Coordinate*): LineString = factory.createLineString(coordinates.toArray)
 
   val A = Segment("A", line(new Coordinate(0d, 3d), new Coordinate(6d, 3d)))
 
@@ -37,6 +37,8 @@ object Segments {
 
   val EAD = Segment("EAD", line(
     new Coordinate(0d, 0d), new Coordinate(0d, 3d), new Coordinate(6d, 3d), new Coordinate(6d, 6d)))
+
+  val Q = Segment("Q", line(new Coordinate(3d, 3d), new Coordinate(0d, 0d)))
 
   val F = Segment("F", line(new Coordinate(3d, 0d), new Coordinate(3d, 3d)))
 
