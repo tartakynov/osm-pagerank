@@ -1,6 +1,5 @@
 package org.f100ded.osm.pagerank.graph
 
-import com.vividsolutions.jts.geom.Coordinate
 import org.f100ded.osm.pagerank.graph.GraphUtils.Graph
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -49,6 +48,7 @@ class GraphUtilsSpec extends FlatSpec with Matchers {
 
   "merge" should "should merge H and J into one segment" in {
     val merged = GraphUtils.merge(graph)
+    merged.foreach(println)
     merged should have size 8
     merged.contains(H) shouldBe false
     merged.contains(J) shouldBe false
@@ -78,23 +78,6 @@ class GraphUtilsSpec extends FlatSpec with Matchers {
 
     val x = GraphUtils.split(g)
     x.foreach(println)
-    succeed
-  }
-
-  "split2" should "work" in {
-    val g: Graph = Seq(
-      EAD -> Set(B, C, F, G),
-      B -> Set(EAD),
-      C -> Set(EAD, F),
-      F -> Set(EAD, C),
-      G -> Set(EAD),
-      H -> Set(J),
-      J -> Set(H)
-    ).toMap
-    val x = GraphUtils.split2(g)
-    x.foreach {
-      case (x, y) => println(s"$x = $y")
-    }
     succeed
   }
 }

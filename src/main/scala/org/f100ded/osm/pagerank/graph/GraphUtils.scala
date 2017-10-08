@@ -15,36 +15,6 @@ object GraphUtils {
   }
 
   /**
-    * Merge segments continuing each other into a bigger segment
-    */
-  def merge(graph: Graph): Graph = {
-    val visited = mutable.Set[Segment]()
-    val stack = mutable.Stack[Segment]()
-    var g = graph
-    stack.pushAll(g.keySet)
-    while (stack.nonEmpty) {
-      val segment = stack.pop()
-      if (!visited.contains(segment) && g.contains(segment)) {
-        visited.add(segment)
-        val neighbours = g(segment)
-        val x = neighbours.filter(canMerge(g, segment, _))
-        if (x.size == 1) {
-          val head = x.head
-          val merged = segment.concat(head)
-          val links = (g(head) ++ g(segment)).filterNot(v => v.equals(head) || v.equals(segment))
-          g += merged.get -> links
-          g = forget(g, head, segment)
-          stack.pushAll(links.diff(visited))
-        } else {
-          stack.pushAll(neighbours.diff(visited))
-        }
-      }
-    }
-
-    g
-  }
-
-  /**
     * Checks if the two segments can be merged into one segment
     */
   def canMerge(graph: Graph, first: Segment, second: Segment): Boolean = if (first.continuedBy(second)) {
@@ -90,41 +60,6 @@ object GraphUtils {
     * Split segments by intersection points
     */
   def split(graph: Graph): Graph = {
-    val visited = mutable.Set[Segment]()
-    val stack = mutable.Stack[Segment]()
-    var g = graph
-    stack.pushAll(g.keySet)
-    while (stack.nonEmpty) {
-      val segment = stack.pop()
-      if (!visited.contains(segment)) {
-        visited.add(segment)
-        val neighbours = g(segment)
-        neighbours.flatMap(segment.splitBy).headOption match {
-          case Some((s1, s2)) =>
-            val x = g(segment).filter(n => s1.geometry.intersects(n.geometry))
-            g += s1 -> (x + s2)
-            x.foreach { q =>
-              g = g.updated(q, g(q) + s1)
-            }
-
-            val y = g(segment).filter(n => s2.geometry.intersects(n.geometry))
-            g += s2 -> (y + s1)
-            y.foreach { q =>
-              g = g.updated(q, g(q) + s2)
-            }
-            g = forget(g, segment)
-            stack.push(s1)
-            stack.push(s2)
-          case _ =>
-            stack.pushAll(neighbours.diff(visited))
-        }
-      }
-    }
-
-    g
-  }
-
-  def split2(graph: Graph): Graph = {
     @tailrec
     def loop(g: Graph, next: List[Segment], visited: Set[Segment]): Graph = next match {
       case Nil => g
@@ -146,11 +81,14 @@ object GraphUtils {
     loop(graph, graph.keySet.toList, Set())
   }
 
-  def merge2(graph: Graph): Graph = {
+  /**
+    * Merge segments continuing each other into a bigger segment
+    */
+  def merge(graph: Graph): Graph = {
     @tailrec
     def loop(g: Graph, next: List[Segment], visited: Set[Segment]): Graph = next match {
       case Nil => g
-      case head :: tail if visited.contains(head) => loop(g, tail, visited)
+      case head :: tail if visited.contains(head) || !g.contains(head) => loop(g, tail, visited)
       case head :: tail =>
         val neighbours = g(head)
         neighbours.filter(canMerge(g, head, _)).toList match {
@@ -160,7 +98,7 @@ object GraphUtils {
             val links = (gg(segment) ++ gg(head)) - segment - head
             gg += merged.get -> links
             gg = forget(gg, segment, head)
-            loop(g, tail ++ links.diff(visited), visited + head)
+            loop(gg, tail ++ links.diff(visited), visited + head)
           case _ => loop(g, tail ++ neighbours.diff(visited), visited + head)
         }
     }
