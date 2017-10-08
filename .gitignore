@@ -11,3 +11,6 @@ target/
 
 # Log files
 *.log
+
+# Data folder
+data/

@@ -6,7 +6,7 @@ import org.f100ded.osm.pagerank.graph.Segment.SplitResult
 /**
   * A segment of a linear graph, e.g. road graph
   */
-case class Segment(name: String, geometry: LineString) {
+case class Segment(geometry: LineString) {
   private lazy val factory = this.geometry.getFactory
 
   /**
@@ -14,23 +14,35 @@ case class Segment(name: String, geometry: LineString) {
     */
   def concat(other: Segment): Option[Segment] = {
     if (this.continuedBy(other)) {
-      val mergedGeometry = factory.createLineString(
+      val concatenated = factory.createLineString(
         this.geometry.getCoordinates.dropRight(1) ++ other.geometry.getCoordinates
       )
 
-      Some(Segment(this.name + other.name, mergedGeometry))
+      Some(Segment(concatenated))
     } else {
       None
     }
   }
 
+  /**
+    * Checks whether this segment can be split in half by the intersection point with the given segment
+    *
+    *   No                Yes               No              Yes
+    *   x------> (this)   ---x---> (this)   ---->x (this)      |
+    *   |                    |                   |             |
+    *   |                    |                   |             v
+    *   v                    v                   v          ---x--> (this)
+    */
   def splittableBy(other: Segment): Boolean = this.geometry.intersection(other.geometry) match {
     case point: Point =>
       !point.equalsExact(this.geometry.getStartPoint) && !point.equalsExact(this.geometry.getEndPoint)
     case _ => false
   }
 
-  def linkedWith(other: Segment): Boolean = this.geometry.intersects(other.geometry)
+  /**
+    * Check whether this segment is touching the given segment or not
+    */
+  def isTouching(other: Segment): Boolean = this.geometry.intersects(other.geometry)
 
   /**
     * Returns result of splitting the current segment into 2 segments by an intersection point
@@ -59,7 +71,7 @@ case class Segment(name: String, geometry: LineString) {
             point.getCoordinate +: coordinates.takeRight(coordinates.length - i - 1).filterNot(_.equals2D(c))
           )
 
-          result = Some((Segment(name + "1", first), Segment(name + "2", second)))
+          result = Some((Segment(first), Segment(second)))
         }
       }
 
