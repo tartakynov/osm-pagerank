@@ -27,11 +27,11 @@ case class Segment(geometry: LineString) {
   /**
     * Checks whether this segment can be split in half by the intersection point with the given segment
     *
-    * No                Yes               No              Yes
-    * x------> (this)   ---x---> (this)   ---->x (this)      |
-    * |                    |                   |             |
-    * |                    |                   |             v
-    * v                    v                   v          ---x--> (this)
+    * | No                Yes               No              Yes
+    * | x------> (this)   ---x---> (this)   ---->x (this)      |
+    * | |                    |                   |             |
+    * | |                    |                   |             v
+    * | v                    v                   v          ---x--> (this)
     */
   def splittableBy(other: Segment): Boolean = this.geometry.intersection(other.geometry) match {
     case point: Point =>
@@ -92,19 +92,19 @@ case class Segment(geometry: LineString) {
     * Checks whether the given segment flows into the current segment
     *
     * case 1 ('this' flows into 'other')
-    * --------*-->
-    * this    |
-    * |
-    * | other
-    * v
+    * | --------*-->
+    * | this    |
+    * |         |
+    * |         | other
+    * |         v
     *
     * case 2 ('this' flows into 'other')
-    * |
-    * ------->*
-    * this    |
-    * |
-    * | other
-    * v
+    * |         |
+    * | ------->*
+    * | this    |
+    * |         |
+    * |         | other
+    * |         v
     */
   def flowsInto(other: Segment): Boolean = {
     val case1 = other.geometry.getStartPoint.intersects(this.geometry) &&
