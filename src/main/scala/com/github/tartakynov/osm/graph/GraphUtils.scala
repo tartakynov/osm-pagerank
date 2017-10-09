@@ -1,7 +1,7 @@
-package org.f100ded.osm.pagerank.graph
+package com.github.tartakynov.osm.graph
 
+import com.github.tartakynov.osm.graph.Graph._
 import com.typesafe.scalalogging.StrictLogging
-import org.f100ded.osm.pagerank.graph.Graph._
 
 import scala.annotation.tailrec
 
@@ -21,11 +21,11 @@ object GraphUtils extends StrictLogging {
     * Split segments by intersection points
     *
     * Example (direction of C is not relevant):
-    *       A             A1     A2
+    * A             A1     A2
     * >------*-----> = >------*----->
-    *        |                |
-    *        |                |
-    *      C |              C |
+    * |                |
+    * |                |
+    * C |              C |
     */
   def split(graph: Graph): Graph = {
     @tailrec
@@ -57,15 +57,15 @@ object GraphUtils extends StrictLogging {
     * Reduce number of vertices in the graph by contracting the edges between segments continuing each other
     *
     * Case when the edge between A and B will be contracted:
-    *    A      B            AB
+    * A      B            AB
     * >----->------> = >------------>
     *
     * Case when the edge between A and B won't be contracted (direction of C is not relevant):
-    *    A      B         A      B
+    * A      B         A      B
     * >------*-----> = >------*----->
-    *        |                |
-    *        |                |
-    *      C |              C |
+    * |                |
+    * |                |
+    * C |              C |
     */
   def reduce(graph: Graph): Graph = {
     @tailrec

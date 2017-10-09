@@ -1,7 +1,7 @@
-package org.f100ded.osm.pagerank.graph
+package com.github.tartakynov.osm.graph
 
+import com.github.tartakynov.osm.graph.Segment.SplitResult
 import com.vividsolutions.jts.geom.{Coordinate, LineString, Point}
-import org.f100ded.osm.pagerank.graph.Segment.SplitResult
 
 /**
   * A segment of a linear graph, e.g. road graph
@@ -27,11 +27,11 @@ case class Segment(geometry: LineString) {
   /**
     * Checks whether this segment can be split in half by the intersection point with the given segment
     *
-    *   No                Yes               No              Yes
-    *   x------> (this)   ---x---> (this)   ---->x (this)      |
-    *   |                    |                   |             |
-    *   |                    |                   |             v
-    *   v                    v                   v          ---x--> (this)
+    * No                Yes               No              Yes
+    * x------> (this)   ---x---> (this)   ---->x (this)      |
+    * |                    |                   |             |
+    * |                    |                   |             v
+    * v                    v                   v          ---x--> (this)
     */
   def splittableBy(other: Segment): Boolean = this.geometry.intersection(other.geometry) match {
     case point: Point =>
@@ -94,17 +94,17 @@ case class Segment(geometry: LineString) {
     * case 1 ('this' flows into 'other')
     * --------*-->
     * this    |
-    *         |
-    *         | other
-    *         v
+    * |
+    * | other
+    * v
     *
     * case 2 ('this' flows into 'other')
-    *         |
+    * |
     * ------->*
     * this    |
-    *         |
-    *         | other
-    *         v
+    * |
+    * | other
+    * v
     */
   def flowsInto(other: Segment): Boolean = {
     val case1 = other.geometry.getStartPoint.intersects(this.geometry) &&

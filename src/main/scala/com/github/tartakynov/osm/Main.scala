@@ -1,10 +1,10 @@
-package org.f100ded.osm.pagerank
+package com.github.tartakynov.osm
 
 import java.io.{BufferedWriter, File, FileWriter}
 
+import com.github.tartakynov.osm.graph.Graph.Graph
+import com.github.tartakynov.osm.graph.{Graph, GraphUtils}
 import com.typesafe.scalalogging.StrictLogging
-import org.f100ded.osm.pagerank.graph.Graph.Graph
-import org.f100ded.osm.pagerank.graph.{Graph, GraphUtils}
 
 object Main extends StrictLogging {
   def main(args: Array[String]): Unit = {

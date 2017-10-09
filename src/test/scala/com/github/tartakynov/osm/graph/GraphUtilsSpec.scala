@@ -1,11 +1,11 @@
-package org.f100ded.osm.pagerank.graph
+package com.github.tartakynov.osm.graph
 
-import com.vividsolutions.jts.geom.Coordinate
-import org.f100ded.osm.pagerank.graph.Graph._
+import com.github.tartakynov.osm.graph.Graph._
 import org.scalatest.{FlatSpec, Matchers}
 
 class GraphUtilsSpec extends FlatSpec with Matchers {
-  import org.f100ded.osm.pagerank.Segments._
+
+  import com.github.tartakynov.osm.Segments._
 
   //     ^       ^       ^
   //   B |     C |       |

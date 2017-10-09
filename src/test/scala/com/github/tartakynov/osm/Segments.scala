@@ -1,16 +1,16 @@
-package org.f100ded.osm.pagerank
+package com.github.tartakynov.osm
 
+import com.github.tartakynov.osm.graph.Segment
 import com.vividsolutions.jts.geom.{Coordinate, GeometryFactory, LineString}
-import org.f100ded.osm.pagerank.graph.Segment
 
 /**
-  *   ^       ^       ^
+  * ^       ^       ^
   * B |     C |     D |
-  *   |       |       |
+  * |       |       |
   * A x-------x------>x       H ------>
-  *   ^       ^       ^
+  * ^       ^       ^
   * E |     F |     G |
-  *   |       |       |
+  * |       |       |
   */
 object Segments {
   private val factory = new GeometryFactory()

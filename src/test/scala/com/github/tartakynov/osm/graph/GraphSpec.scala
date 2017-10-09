@@ -1,11 +1,11 @@
-package org.f100ded.osm.pagerank.graph
+package com.github.tartakynov.osm.graph
 
-import org.f100ded.osm.pagerank.graph.Graph._
+import com.github.tartakynov.osm.graph.Graph._
 import org.scalatest.{FlatSpec, Matchers}
 
 class GraphSpec extends FlatSpec with Matchers {
 
-  import org.f100ded.osm.pagerank.Segments._
+  import com.github.tartakynov.osm.Segments._
 
   //   ^       ^       ^
   // B |     C |     D |
@@ -29,6 +29,7 @@ class GraphSpec extends FlatSpec with Matchers {
 
   "foldBFS" should "traverse the graph against the direction of the flow" in {
     def x(acc: Set[Segment], segment: Segment): Set[Segment] = acc + segment
+
     graph.foldBFS(A, Set[Segment]())(x) should contain only(A, E, F)
     graph.foldBFS(B, Set[Segment]())(x) should contain only(B, E)
     graph.foldBFS(C, Set[Segment]())(x) should contain only(C, A, E, F)
@@ -37,7 +38,7 @@ class GraphSpec extends FlatSpec with Matchers {
     graph.foldBFS(F, Set[Segment]())(x) should contain only F
     graph.foldBFS(G, Set[Segment]())(x) should contain only G
     graph.foldBFS(H, Set[Segment]())(x) should contain only H
-    graph.foldBFS(J, Set[Segment]())(x) should contain only (H, J)
+    graph.foldBFS(J, Set[Segment]())(x) should contain only(H, J)
   }
 
   "areContractible" should "be true only for H and J" in {

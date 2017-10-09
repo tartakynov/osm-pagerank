@@ -1,4 +1,4 @@
-package org.f100ded.osm.pagerank.graph
+package com.github.tartakynov.osm.graph
 
 import com.typesafe.scalalogging.StrictLogging
 import com.vividsolutions.jts.geom.LineString
@@ -18,7 +18,7 @@ object Graph extends StrictLogging {
     * Edges file contains undirected edges that show which segments are intersecting at any point.
     *
     * @param segmentsFile CSV file with the following format: id,linestring_wkt
-    * @param edgesFile CSV file with the following format: id1,id2
+    * @param edgesFile    CSV file with the following format: id1,id2
     * @return
     */
   def fromCSV(segmentsFile: String, edgesFile: String): Graph = {
@@ -42,7 +42,7 @@ object Graph extends StrictLogging {
         case _ => Nil
       }
     }.toList.groupBy(_._1).mapValues(_.map(_._2).toSet)
- }
+  }
 
   implicit class GraphEx(graph: Graph) {
     /**
@@ -98,4 +98,5 @@ object Graph extends StrictLogging {
       g -- segments
     }
   }
+
 }
