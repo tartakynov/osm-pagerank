@@ -8,7 +8,7 @@ import scala.annotation.tailrec
 /**
   * Utilities for data preparation
   */
-object GraphUtils extends StrictLogging {
+object Normalizer extends StrictLogging {
   /**
     * Normalizes the given graph
     */

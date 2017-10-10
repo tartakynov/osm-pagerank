@@ -3,12 +3,12 @@ package com.github.tartakynov.osm
 import java.io.{BufferedWriter, File, FileWriter}
 
 import com.github.tartakynov.osm.graph.Graph.Graph
-import com.github.tartakynov.osm.graph.{Graph, GraphUtils}
+import com.github.tartakynov.osm.graph.{Graph, Normalizer}
 import com.typesafe.scalalogging.StrictLogging
 
 object Main extends StrictLogging {
   def main(args: Array[String]): Unit = {
-    val graph = GraphUtils.normalize(Graph.fromCSV("data/vertices.csv", "data/edges.csv"))
+    val graph = Normalizer.normalize(Graph.fromCSV("data/vertices.csv", "data/edges.csv"))
     writeSegments(new File(s"data/output_normalized.csv"), graph)
   }
 
