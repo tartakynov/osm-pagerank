@@ -2,8 +2,8 @@ package com.github.tartakynov.osm
 
 import java.io.{BufferedWriter, File, FileWriter}
 
-import com.github.tartakynov.osm.algorithms.WeightCalculator
-import com.github.tartakynov.osm.algorithms.WeightCalculator.Weights
+import com.github.tartakynov.osm.algorithms.UpstreamSegmentsCounter
+import com.github.tartakynov.osm.algorithms.UpstreamSegmentsCounter.Weights
 import com.github.tartakynov.osm.graph.Graph.Graph
 import com.github.tartakynov.osm.graph.{Graph, Normalizer}
 import com.typesafe.scalalogging.StrictLogging
@@ -11,7 +11,7 @@ import com.typesafe.scalalogging.StrictLogging
 object Main extends StrictLogging {
   def main(args: Array[String]): Unit = {
     val graph = Normalizer.normalize(Graph.fromCSV("data/vertices.csv", "data/edges.csv"))
-    val weights = WeightCalculator.calculate(graph)
+    val weights = UpstreamSegmentsCounter.calculate(graph)
     writeSegments(new File(s"data/output_weighted.csv"), weights, graph)
   }
 

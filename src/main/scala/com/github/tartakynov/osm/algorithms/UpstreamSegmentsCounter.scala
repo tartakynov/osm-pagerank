@@ -7,10 +7,9 @@ import com.typesafe.scalalogging.StrictLogging
 import scala.collection.mutable
 
 /**
-  * Calculates weights of the segments
+  * Calculates number of upstream segments for each segment
   */
-object WeightCalculator extends StrictLogging {
-  type Weights = Map[Segment, Int]
+object UpstreamSegmentsCounter extends WeightsCalculator with StrictLogging {
 
   def calculate(graph: Graph): Weights = {
     logger.info(s"Calculating segments weights. Found ${graph.size} segments")

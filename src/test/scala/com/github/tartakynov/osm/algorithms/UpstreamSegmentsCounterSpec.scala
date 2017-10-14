@@ -3,7 +3,7 @@ package com.github.tartakynov.osm.algorithms
 import com.github.tartakynov.osm.graph.Graph.Graph
 import org.scalatest.{FlatSpec, Matchers}
 
-class WeightCalculatorSpec extends FlatSpec with Matchers {
+class UpstreamSegmentsCounterSpec extends FlatSpec with Matchers {
 
   import com.github.tartakynov.osm.Segments._
 
@@ -29,7 +29,7 @@ class WeightCalculatorSpec extends FlatSpec with Matchers {
   ).toMap
 
   "calculate" should "calculate" in {
-    WeightCalculator.calculate(graph) shouldBe Map(
+    UpstreamSegmentsCounter.calculate(graph) shouldBe Map(
       E -> 1,
       F -> 1,
       G -> 1,
