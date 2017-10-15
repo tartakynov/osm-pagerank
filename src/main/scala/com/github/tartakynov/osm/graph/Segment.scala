@@ -9,6 +9,8 @@ import com.vividsolutions.jts.geom.{Coordinate, LineString, Point}
 case class Segment(geometry: LineString) {
   private lazy val factory = this.geometry.getFactory
 
+  lazy val id: Long = java.lang.Integer.toUnsignedLong(hashCode())
+
   /**
     * Concatenates the given segment into the current segment if possible
     */

@@ -2,7 +2,7 @@ package com.github.tartakynov.osm
 
 import com.github.tartakynov.osm.algorithms.PageRank
 import com.github.tartakynov.osm.graph.Graph
-import com.github.tartakynov.osm.graph.Graph._
+import com.github.tartakynov.osm.graph.Weights._
 import com.typesafe.scalalogging.StrictLogging
 
 object Main extends StrictLogging {
@@ -11,6 +11,6 @@ object Main extends StrictLogging {
     //    graph.save("data/output_normalized_vertices.csv", "data/output_normalized_edges.csv")
     val graph = Graph.fromCSV("data/output_normalized_vertices.csv", "data/output_normalized_edges.csv")
     val weights = PageRank(d = 0.85, e = 0.001).calculate(graph)
-    graph.save("data/output_weighted1_vertices.csv", "data/output_weighted1_edges.csv", Some(weights))
+    weights.save("data/page_rank.csv")
   }
 }

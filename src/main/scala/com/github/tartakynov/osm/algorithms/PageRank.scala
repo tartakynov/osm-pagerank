@@ -2,6 +2,7 @@ package com.github.tartakynov.osm.algorithms
 
 import com.github.tartakynov.osm.graph.Graph.Graph
 import com.github.tartakynov.osm.graph.Segment
+import com.github.tartakynov.osm.graph.Weights.Weights
 import com.typesafe.scalalogging.StrictLogging
 
 /**
@@ -31,13 +32,13 @@ class PageRank(d: Double, e: Double) extends WeightsCalculator with StrictLoggin
 
     logger.info(s"Calculating PageRank. Found ${graph.size} segments")
     val startTime = System.currentTimeMillis()
-    var ranks = graph.map(_._1 -> 1.0 / n)
+    var ranks = graph.map(_._1 -> 1.0)
     var error = 1d
     var iteration = 1
     do {
       val next = ranks.map(p => p._1 -> xPR(p._1, ranks))
       error = Math.sqrt(ranks.map { case (key, value) => Math.pow(next(key) - value, 2) }.sum / n)
-      logger.info(s"Iteration $iteration: error = $error. The goal is $e")
+      logger.info("Iteration %d: error = %.5f. The goal is %.5f".format(iteration, error, e))
       iteration += 1
       ranks = next
     } while (error > e)
