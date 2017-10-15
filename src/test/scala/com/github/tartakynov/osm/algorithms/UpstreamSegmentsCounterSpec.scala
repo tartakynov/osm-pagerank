@@ -29,7 +29,7 @@ class UpstreamSegmentsCounterSpec extends FlatSpec with Matchers {
   ).toMap
 
   "calculate" should "calculate" in {
-    PageRank.calculate(graph) shouldBe Map(
+    UpstreamSegmentsCounter.calculate(graph) shouldBe Map(
       E -> 1,
       F -> 1,
       G -> 1,

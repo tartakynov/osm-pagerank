@@ -26,8 +26,8 @@ object Graph extends StrictLogging {
     */
   def fromCSV(segmentsFile: String, edgesFile: String): Graph = {
     logger.info(s"Reading graph from $segmentsFile and $edgesFile")
-    val segmentsSource = io.Source.fromFile("data/vertices.csv")
-    val edgesSource = io.Source.fromFile("data/edges.csv")
+    val segmentsSource = io.Source.fromFile(segmentsFile)
+    val edgesSource = io.Source.fromFile(edgesFile)
     val wktReader = new WKTReader()
     val segments = segmentsSource.getLines.map { line =>
       val cols = line.split(",", 2)

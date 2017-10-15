@@ -10,7 +10,7 @@ object Main extends StrictLogging {
     //    val graph = Normalizer.normalize(Graph.fromCSV("data/vertices.csv", "data/edges.csv"))
     //    graph.save("data/output_normalized_vertices.csv", "data/output_normalized_edges.csv")
     val graph = Graph.fromCSV("data/output_normalized_vertices.csv", "data/output_normalized_edges.csv")
-    val weights = PageRank.calculate(graph)
+    val weights = PageRank(d = 0.85, e = 0.001).calculate(graph)
     graph.save("data/output_weighted1_vertices.csv", "data/output_weighted1_edges.csv", Some(weights))
   }
 }
