@@ -1,28 +1,16 @@
 package com.github.tartakynov.osm
 
-import java.io.{BufferedWriter, File, FileWriter}
-
-import com.github.tartakynov.osm.algorithms.UpstreamSegmentsCounter
-import com.github.tartakynov.osm.algorithms.UpstreamSegmentsCounter.Weights
-import com.github.tartakynov.osm.graph.Graph.Graph
-import com.github.tartakynov.osm.graph.{Graph, Normalizer}
+import com.github.tartakynov.osm.algorithms.PageRank
+import com.github.tartakynov.osm.graph.Graph
+import com.github.tartakynov.osm.graph.Graph._
 import com.typesafe.scalalogging.StrictLogging
 
 object Main extends StrictLogging {
   def main(args: Array[String]): Unit = {
-    val graph = Normalizer.normalize(Graph.fromCSV("data/vertices.csv", "data/edges.csv"))
-    val weights = UpstreamSegmentsCounter.calculate(graph)
-    writeSegments(new File(s"data/output_weighted.csv"), weights, graph)
-  }
-
-  private def writeSegments(outfile: File, weights: Weights, graph: Graph): Unit = {
-    logger.info(s"Writing segments to $outfile")
-    val output = new BufferedWriter(new FileWriter(outfile))
-    graph.keysIterator.foreach { segment =>
-      output.write(s"""${weights(segment)},"${segment.geometry.toText}"""")
-      output.write("\n")
-    }
-
-    output.close()
+    //    val graph = Normalizer.normalize(Graph.fromCSV("data/vertices.csv", "data/edges.csv"))
+    //    graph.save("data/output_normalized_vertices.csv", "data/output_normalized_edges.csv")
+    val graph = Graph.fromCSV("data/output_normalized_vertices.csv", "data/output_normalized_edges.csv")
+    val weights = PageRank.calculate(graph)
+    graph.save("data/output_weighted1_vertices.csv", "data/output_weighted1_edges.csv", Some(weights))
   }
 }

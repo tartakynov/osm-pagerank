@@ -1,5 +1,8 @@
 package com.github.tartakynov.osm.graph
 
+import java.io.{BufferedWriter, FileWriter}
+
+import com.github.tartakynov.osm.algorithms.UpstreamSegmentsCounter.Weights
 import com.typesafe.scalalogging.StrictLogging
 import com.vividsolutions.jts.geom.LineString
 import com.vividsolutions.jts.io.WKTReader
@@ -45,6 +48,26 @@ object Graph extends StrictLogging {
   }
 
   implicit class GraphEx(graph: Graph) {
+    def save(segmentsFile: String, edgesFile: String, weights: Option[Weights] = None): Unit = {
+      def id(segment: Segment): String = java.lang.Integer.toUnsignedLong(segment.hashCode()).toString
+
+      val segmentsWriter = new BufferedWriter(new FileWriter(segmentsFile))
+      val edgesWriter = new BufferedWriter(new FileWriter(edgesFile))
+      try {
+        logger.info(s"Saving graph to $segmentsFile and $edgesFile")
+        graph.foreach {
+          case (segment, edges) =>
+            segmentsWriter.write(s"""${id(segment)},"${segment.geometry.toText}"""")
+            weights.foreach(w => segmentsWriter.write(s",${w(segment)}"))
+            segmentsWriter.write("\n")
+            edges.map(link => s"${id(segment)},${id(link)}\n").foreach(edgesWriter.write)
+        }
+      } finally {
+        segmentsWriter.close()
+        edgesWriter.close()
+      }
+    }
+
     /**
       * Applies a binary operator starting from the start segment and as far as possible against
       * the flow of the segments
