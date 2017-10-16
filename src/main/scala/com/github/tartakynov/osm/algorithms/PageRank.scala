@@ -13,7 +13,7 @@ import com.typesafe.scalalogging.StrictLogging
   */
 class PageRank(d: Double, e: Double) extends WeightsCalculator with StrictLogging {
   override def calculate(graph: Graph): Weights = {
-    val n = graph.size
+    val n: Double = graph.keySet.size
 
     /**
       * Segments flowing into the given segment
@@ -32,7 +32,7 @@ class PageRank(d: Double, e: Double) extends WeightsCalculator with StrictLoggin
 
     logger.info(s"Calculating PageRank. Found ${graph.size} segments")
     val startTime = System.currentTimeMillis()
-    var ranks = graph.map(_._1 -> 1.0)
+    var ranks = graph.map(_._1 -> 1.0 / n)
     var error = 1d
     var iteration = 1
     do {
