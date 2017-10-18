@@ -1,6 +1,7 @@
 package com.github.tartakynov.osm.algorithms
 
 import com.github.tartakynov.osm.graph.Graph.Graph
+import org.scalatest.matchers.Matcher
 import org.scalatest.{FlatSpec, Matchers}
 
 class PageRankSpec extends FlatSpec with Matchers {
@@ -29,8 +30,25 @@ class PageRankSpec extends FlatSpec with Matchers {
   ).toMap
 
   "PageRank" should "sum to one" in {
-    val beAroundOne = be >= .99 and be <= 1.01
     val ranks = PageRank(d = 0.85, e = 0.001).calculate(graph)
-    ranks.values.sum should beAroundOne
+    ranks.values.sum should beAround(1)
+  }
+
+  "PageRank" should "match with expected values" in {
+    val ranks = PageRank(d = 0.85, e = 0.001).calculate(graph)
+    ranks(A1) should beAround(0.08722377761321068)
+    ranks(A2) should beAround(0.12429388028266422)
+    ranks(B) should beAround(0.08722377761321068)
+    ranks(C) should beAround(0.12429388028266422)
+    ranks(D) should beAround(0.21888767520020203)
+    ranks(E) should beAround(0.06120966981800094)
+    ranks(F) should beAround(0.06120966981800094)
+    ranks(G) should beAround(0.06120966981800094)
+    ranks(H) should beAround(0.06120966981800094)
+    ranks(J) should beAround(0.11323788540842042)
+  }
+
+  def beAround(value: Double, tolerance: Double = 0.01): Matcher[Double] = {
+    be >= (value - tolerance) and be <= (value + tolerance)
   }
 }

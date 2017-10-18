@@ -13,38 +13,44 @@ import com.typesafe.scalalogging.StrictLogging
   */
 class PageRank(d: Double, e: Double) extends WeightsCalculator with StrictLogging {
   override def calculate(graph: Graph): Weights = {
-    val n: Double = graph.keySet.size
+    val n = graph.keySet.size
 
     /**
       * Segments flowing into the given segment
       */
-    def xM(p: Segment): Set[Segment] = graph(p).filter(_.flowsInto(p))
+    def flowingIn(p: Segment): Set[Segment] = graph(p).filter(_.flowsInto(p))
 
     /**
       * Number of outbound segments of the given segment
       */
-    def xL(p: Segment): Int = graph(p).count(p.flowsInto)
-
-    /**
-      * Calculates PageRank of the give segment
-      */
-    def xPR(p: Segment, pr: Weights): Double = (1d - d) / n + d * xM(p).map(pj => pr(pj) / xL(pj)).sum
+    def outCount(p: Segment): Int = graph(p).count(p.flowsInto)
 
     logger.info(s"Calculating PageRank. Found ${graph.size} segments")
     val startTime = System.currentTimeMillis()
     var ranks = graph.map(_._1 -> 1.0 / n)
-    var error = 1d
+    var error = 1.0
     var iteration = 1
     do {
-      val next = ranks.map(p => p._1 -> xPR(p._1, ranks))
-      error = Math.sqrt(ranks.map { case (key, value) => Math.pow(next(key) - value, 2) }.sum / n)
-      logger.info("Iteration %d: error = %.5f. The goal is %.5f".format(iteration, error, e))
+      val next = ranks.map {
+        case (p, _) => p -> ((1.0 - d) / n + d * flowingIn(p).map(pj => ranks(pj) / outCount(pj)).sum)
+      }
+
+      error = rmsd(next, ranks)
       iteration += 1
       ranks = next
+
+      logger.info("Iteration %d: delta = %.5f. The goal is %.5f".format(iteration, error, e))
     } while (error > e)
 
     logger.info(s"Done calculating PageRank in ${System.currentTimeMillis() - startTime}ms")
-    ranks
+    ranks.mapValues(_ / ranks.values.sum)
+  }
+
+  /**
+    * Root-mean-square deviation
+    */
+  private def rmsd(a: Weights, b: Weights): Double = {
+    Math.sqrt(a.map { case (key, value) => Math.pow(b(key) - value, 2) }.sum / a.size)
   }
 }
 
