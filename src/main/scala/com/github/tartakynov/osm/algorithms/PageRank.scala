@@ -27,9 +27,9 @@ class PageRank(d: Double, e: Double) extends WeightsCalculator with StrictLoggin
 
     logger.info(s"Calculating PageRank. Found ${graph.size} segments")
     val startTime = System.currentTimeMillis()
-    var ranks = graph.map(_._1 -> 1.0 / n)
+    var ranks = graph.map(_._1 -> 1.0)
     var error = 1.0
-    var iteration = 1
+    var iteration = 0
     do {
       val next = ranks.map {
         case (p, _) => p -> ((1.0 - d) / n + d * flowingIn(p).map(pj => ranks(pj) / outCount(pj)).sum)
@@ -39,7 +39,7 @@ class PageRank(d: Double, e: Double) extends WeightsCalculator with StrictLoggin
       iteration += 1
       ranks = next
 
-      logger.info("Iteration %d: delta = %.5f. The goal is %.5f".format(iteration, error, e))
+      logger.info("Iteration %d: delta = %f. The goal is %f".format(iteration, error, e))
     } while (error > e)
 
     logger.info(s"Done calculating PageRank in ${System.currentTimeMillis() - startTime}ms")

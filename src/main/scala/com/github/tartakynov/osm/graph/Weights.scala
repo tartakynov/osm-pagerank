@@ -13,7 +13,7 @@ object Weights extends StrictLogging {
       try {
         logger.info(s"Saving weights to $file")
         weights.foreach {
-          case (segment, weight) => writer.write("%d,%.5f\n".format(segment.id, weight))
+          case (segment, weight) => writer.write("%d,%.10f\n".format(segment.id, weight))
         }
       } finally {
         writer.close()
