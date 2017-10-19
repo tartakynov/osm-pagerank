@@ -1,3 +1,7 @@
+# OSM PageRank
+
+![demo](https://raw.githubusercontent.com/tartakynov/osm-pagerank-scala/master/docs/volga.gif)
+
 ### Step 1. Prepare data
 
 Use imposm3 to import osm pbf file into PostGIS database and then
