@@ -1,4 +1,4 @@
-# OSM PageRank
+# OpenStreetMap PageRank
 
 ![demo](https://raw.githubusercontent.com/tartakynov/osm-pagerank-scala/master/docs/volga.gif)
 
