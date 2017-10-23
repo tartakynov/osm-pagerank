@@ -1,3 +1,6 @@
+-- bounding box is created using QGIS with coordinate capture plugin
+-------------
+
 SELECT
     r.id,
     ST_AsText(r.geometry) as geometry
