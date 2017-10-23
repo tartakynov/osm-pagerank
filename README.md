@@ -1,6 +1,8 @@
 # OpenStreetMap PageRank
 
-![demo](https://raw.githubusercontent.com/tartakynov/osm-pagerank-scala/master/docs/volga.gif)
+Volga river ![volga-river](https://raw.githubusercontent.com/tartakynov/osm-pagerank-scala/master/docs/volga-river.gif)
+
+Bangkok roads ![bangkok-transport](https://raw.githubusercontent.com/tartakynov/osm-pagerank-scala/master/docs/bkk-transport.gif)
 
 ### Step 1. Prepare data
 
